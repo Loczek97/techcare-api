@@ -18,8 +18,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Konfiguracja raportowania błędów (tylko w środowisku deweloperskim)
-error_reporting(E_ALL); // Wyświetlaj wszystkie błędy
-ini_set('display_errors', 1); // Włącz wyświetlanie błędów
+// error_reporting(E_ALL); // Wyświetlaj wszystkie błędy
+// ini_set('display_errors', 1); // Włącz wyświetlanie błędów
 
 // Konfiguracja nagłówków CORS
 header("Access-Control-Allow-Origin: http://localhost:5173"); // Adres Twojego frontendu

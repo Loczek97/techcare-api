@@ -93,9 +93,6 @@ class OrderController
 
         if ($orders) {
             echo json_encode(['status' => 'success', 'data' => $orders]);
-        } else {
-            http_response_code(404);
-            echo json_encode(['status' => 'error', 'message' => 'Brak zamówień']);
         }
     }
 }

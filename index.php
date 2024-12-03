@@ -3,15 +3,17 @@ require_once './controllers/AuthController.php';
 require_once './subrouters/UserRouter.php';
 require_once './controllers/PublicController.php';
 require_once './subrouters/TechRouter.php';
+require_once './CheckUserPermissions.php';
 require_once 'Cookies.php';
 require_once 'config.php';
 
+header('Content-Type: application/json');
 
 $url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $url_parts = explode('/', trim($url_path, '/'));
 $action = isset($url_parts[2]) ? $url_parts[2] : null;
 
-header("Content-Type: application/json");
+
 
 if (isset($_COOKIE['session_cookie'])) {
     refreshCookie('session_cookie', $_COOKIE['session_cookie']);
@@ -20,6 +22,12 @@ if (isset($_COOKIE['session_cookie'])) {
 if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $action !== 'public') {
     checkSessionId();
 }
+
+if ($action == 'tech') {
+    CheckUserPermission($_SESSION['user']['user_id']);
+}
+
+
 
 $AuthController = new AuthController();
 $PublicController = new PublicController();
@@ -45,7 +53,6 @@ switch ($action) {
     case 'tech':
         $TechRouter->handleRequest($url_parts[3]);
         break;
-
     case 'public':
         $PublicController->handleRequest();
         break;

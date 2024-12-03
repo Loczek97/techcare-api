@@ -13,22 +13,22 @@ class AuthModel
     public function login($email, $password)
     {
         $query = "SELECT 
-            u.user_id, 
-            u.email, 
-            u.first_name, 
-            u.last_name, 
-            u.phone, 
-            u.address, 
-            u.password,  
-            u.created_at, 
-            u.updated_at, 
-            u.permission_id, 
-            p.permission_level, 
-            p.permission_name
-        FROM users u
-        LEFT JOIN permissions p ON u.permission_id = p.permission_id
-        WHERE u.email = :email 
-        LIMIT 1";
+        u.user_id, 
+        u.email, 
+        u.first_name, 
+        u.last_name, 
+        u.phone, 
+        u.address, 
+        u.password,  
+        u.created_at, 
+        u.updated_at, 
+        p.permission_id,
+        p.permission_name
+    FROM users u
+    LEFT JOIN user_permissions up ON u.user_id = up.user_id
+    LEFT JOIN permissions p ON up.permission_id = p.permission_id
+    WHERE u.email = :email 
+    LIMIT 1";
 
         $result = $this->db->fetch($query, [':email' => $email]);
 
@@ -45,10 +45,11 @@ class AuthModel
             'address' => $result['address'],
             'created_at' => $result['created_at'],
             'updated_at' => $result['updated_at'],
-            'permission_level' => $result['permission_level'],
+            'permission_id' => $result['permission_id'],
             'permission_name' => $result['permission_name']
         ];
     }
+
 
     public function register($email, $password, $password2, $first_name, $last_name, $phone = null, $address = null)
     {
@@ -66,6 +67,9 @@ class AuthModel
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
+        $permission_id = $this->getClientPermissionId();
+
+        // Zapisujemy użytkownika
         $params = [
             ':first_name' => $first_name,
             ':last_name' => $last_name,
@@ -73,7 +77,7 @@ class AuthModel
             ':password' => $hashedPassword,
             ':created_at' => date('Y-m-d H:i:s'),
             ':updated_at' => date('Y-m-d H:i:s'),
-            ':permission_id' => 1
+            'permission_id' => $permission_id
         ];
 
         $query = "INSERT INTO users (first_name, last_name, email, password, created_at, updated_at, permission_id";
@@ -96,8 +100,22 @@ class AuthModel
 
         $result = $this->db->execute($query, $params);
 
-        return $result ? ['status' => 'success', 'message' => 'Użytkownik został pomyślnie zarejestrowany.'] : ['status' => 'error', 'message' => 'Rejestracja użytkownika nie powiodła się.'];
+        if ($result) {
+            $user_id = $this->db->lastInsertId();
+
+            $permission_id = 1;
+            $insertPermissionQuery = "INSERT INTO user_permissions (user_id, permission_id) VALUES (:user_id, :permission_id)";
+            $this->db->execute($insertPermissionQuery, [
+                ':user_id' => $user_id,
+                ':permission_id' => $permission_id
+            ]);
+
+            return ['status' => 'success', 'message' => 'Użytkownik został pomyślnie zarejestrowany.'];
+        }
+
+        return ['status' => 'error', 'message' => 'Rejestracja użytkownika nie powiodła się.'];
     }
+
 
 
     private function checkIfUserExists($email)
@@ -105,5 +123,14 @@ class AuthModel
         $query = "SELECT email FROM users WHERE email = :email";
         $result = $this->db->fetch($query, [':email' => $email]);
         return !empty($result);
+    }
+
+    private function getClientPermissionId()
+    {
+        $query = 'SELECT permission_id FROM permissions WHERE permission_name = "klient"';
+
+        $result = $this->db->fetch($query);
+
+        return $result['permission_id'];
     }
 }

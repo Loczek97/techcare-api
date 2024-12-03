@@ -26,6 +26,9 @@ class PartsController
             case 'PUT':
                 $this->updatePart();
                 break;
+            case "DELETE":
+                $this->deletePart();
+                break;
         }
     }
 
@@ -64,9 +67,41 @@ class PartsController
 
     private function updatePart()
     {
-        $input = json_decode(file_get_contents(''), true);
+        $input = json_decode(file_get_contents('php://input'), true);
 
-        //error handling
+        $part_id = $input['part_id'];
+        $part_name = $input['part_name'] ?? null;
+        $category = $input['category'] ?? null;
+        $quantity_in_stock = $input['quantity_in_stock'] ?? null;
+        $selling_price = $input['selling_price'] ?? null;
+        $purchase_price = $input['purchase_price'] ?? null;
 
+        // Use updatePart instead of addPart
+        $part = $this->PartsModel->updatePart($part_id, $part_name, $category, $quantity_in_stock, $selling_price, $purchase_price);
+
+        if ($part) {
+            http_response_code(200);
+            echo json_encode(['status' => 'success', 'message' => 'Część zaktualizowana']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Nie udało się zaktualizować części']);
+        }
+    }
+
+
+    private function deletePart()
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $part_id = $input['part_id'];
+
+        $result = $this->PartsModel->deletePart($part_id);
+
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(['status' => 'success', 'message' => 'Część usunięta']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Nie udało się usunąć części']);
+        }
     }
 }

@@ -10,7 +10,7 @@ class PartsModel
 
     public function getParts()
     {
-        $sql = "SELECT part_name, quantity_in_stock, selling_price, purchase_price, updated_at FROM parts";
+        $sql = "SELECT * FROM parts";
 
         $result = $this->db->fetchAll($sql);
 
@@ -55,6 +55,7 @@ class PartsModel
         $sql = "UPDATE parts SET ";
         $params = [':part_id' => $part_id];
 
+        // Check for each parameter and add only if not null
         if ($part_name !== null) {
             $sql .= "part_name = :part_name, ";
             $params[':part_name'] = $part_name;
@@ -78,9 +79,10 @@ class PartsModel
 
         $sql .= "updated_at = :updated_at ";
         $sql = rtrim($sql, ', ');
-        $sql .= "WHERE part_id = :part_id";
+        $sql .= " WHERE part_id = :part_id";
 
         $params[':updated_at'] = date('Y-m-d H:i:s');
+
 
         $result = $this->db->execute($sql, $params);
 
