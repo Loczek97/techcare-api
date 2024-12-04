@@ -1,22 +1,20 @@
 <?php
 
-function CheckUserPermission($user_id)
+function CheckUserPermission()
 {
-    $db = new DatabaseController();
+    // $db = new DatabaseController();
 
-    $sql = "
-        SELECT p.permission_name 
-        FROM permissions p
-        LEFT JOIN user_permissions up ON up.permission_id = p.permission_id
-        WHERE up.user_id = :user_id
-    ";
+    // $input = json_decode(file_get_contents('php://input'), true);
 
-    $result = $db->fetch($sql, [":user_id" => $user_id]);
+    // // $sql = "SELECT p.permission_name 
+    // //         FROM permissions p 
+    // //         LEFT JOIN user_permissions up ON p.permission_id = up.permission_id 
+    // //         WHERE up.user_id = :user_id;";
+
+    // // $result = $db->fetchAll($sql, [":user_id" => $input['user_id']]);
 
 
-    if ($result['permission_name'] != 'technik' && $result['permission_name'] != 'administrator') {
-        http_response_code(403);
-        echo json_encode(['status' => 'error', 'message' => 'Access denied']);;
-        die();
-    }
+    // http_response_code(403);
+    // echo json_encode(['status' => 'PIERDOLE', 'message' => ]);
+    // die();
 }
