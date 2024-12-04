@@ -23,8 +23,8 @@ if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $ac
     checkSessionId();
 }
 
-if ($action == 'tech') {
-    CheckUserPermission($_SESSION['user']['user_id']);
+if ($action == 'tech' || $action == 'adm') {
+    CheckUserPermission();
 }
 
 

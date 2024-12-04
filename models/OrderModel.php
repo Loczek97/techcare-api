@@ -12,8 +12,8 @@ class OrderModel
 
     public function addOrder($user_id, $device_type, $short_specification, $problem_description, $status = 'Oczekujące')
     {
-        $query = "INSERT INTO orders (user_id, device_type, short_specification, problem_description, status, created_at, updated_at) 
-                  VALUES (:user_id, :device_type, :short_specification, :problem_description, :status, :created_at, :updated_at)";
+        $query = "INSERT INTO orders (user_id, device_type, short_specification, problem_description, status) 
+                  VALUES (:user_id, :device_type, :short_specification, :problem_description, :status)";
 
         $params = [
             ':user_id' => $user_id,
@@ -21,8 +21,6 @@ class OrderModel
             ':short_specification' => $short_specification,
             ':problem_description' => $problem_description,
             ':status' => $status,
-            ':created_at' => date('Y-m-d H:i:s'),
-            ':updated_at' => date('Y-m-d H:i:s')
         ];
 
         return $this->db->execute($query, $params);

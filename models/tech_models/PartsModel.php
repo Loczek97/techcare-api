@@ -26,20 +26,26 @@ class PartsModel
         return $result;
     }
 
-    public function addPart($part_name, $category, $quantity_in_stock = 0, $selling_price, $purchase_price)
+    public function addPart($part_name, $category, $selling_price, $purchase_price, $quantity_in_stock = 0)
     {
         $sql = 'INSERT INTO parts (part_name, category, quantity_in_stock, selling_price, purchase_price, updated_at) VALUES (:part_name, :category, :quantity_in_stock, :selling_price, :purchase_price, :updated_at)';
 
-        $result = $this->db->execute($sql, [':part_name' => $part_name, ':category' => $category, ':quantity_in_stock' => $quantity_in_stock, ':selling_price' => $selling_price, ':purchase_price' => $purchase_price, ':updated_at' => date('Y-m-d H:i:s')]);
+        $result = $this->db->execute($sql, [
+            ':part_name' => $part_name,
+            ':category' => $category,
+            ':quantity_in_stock' => $quantity_in_stock,
+            ':selling_price' => $selling_price,
+            ':purchase_price' => $purchase_price,
+            ':updated_at' => date('Y-m-d H:i:s')
+        ]);
 
         if ($result) {
             $sql = "SELECT * FROM parts WHERE part_id = :part_id";
-
             $part = $this->db->fetch($sql, [':part_id' => $this->db->lastInsertId()]);
-
             return $part;
         }
     }
+
 
     public function deletePart($part_id)
     {
@@ -50,7 +56,7 @@ class PartsModel
         return $result;
     }
 
-    public function updatePart($part_id, $part_name = null, $category = null, $quantity_in_stock = null, $selling_price = null, $purchase_price = null)
+    public function updatePart($part_id, $part_name = null, $category = null, $selling_price = null, $purchase_price = null, $quantity_in_stock = null)
     {
         $sql = "UPDATE parts SET ";
         $params = [':part_id' => $part_id];
@@ -82,7 +88,6 @@ class PartsModel
         $sql .= " WHERE part_id = :part_id";
 
         $params[':updated_at'] = date('Y-m-d H:i:s');
-
 
         $result = $this->db->execute($sql, $params);
 
