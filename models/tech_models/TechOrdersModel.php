@@ -20,26 +20,25 @@ class TechOrdersModel
                 o.short_specification AS order_short_specification,
                 o.created_at AS order_created_at,
                 o.updated_at AS order_updated_at,
-                
-                client.user_id AS client_id,
-                client.first_name AS client_first_name,
-                client.last_name AS client_last_name,
-                client.email AS client_email,
-                client.phone AS client_phone,
-                client.address AS client_address,
-                
+
+                cl.user_id AS client_id,
+                cl.first_name AS client_first_name,
+                cl.last_name AS client_last_name,
+                cl.email AS client_email,
+                cl.phone AS client_phone,
+                cl.address AS client_address,
+
                 technician.user_id AS technician_id,
                 technician.first_name AS technician_first_name,
                 technician.last_name AS technician_last_name,
                 technician.email AS technician_email,
-                technician.phone AS technician_phone,
-                
+                technician.phone AS technician_phone
             FROM 
                 orders o
             LEFT JOIN 
-                users client ON o.user_id = client.user_id
+                users cl ON o.user_id = cl.user_id
             LEFT JOIN 
-                users technician ON o.technician_id = technician.user_id
+                users technician ON o.technician_id = technician.user_id;
         ";
 
         return $this->db->fetchAll($orders_sql);
