@@ -2,12 +2,12 @@
 
 function checkSessionId()
 {
-    if (!isset($_SESSION['user'])) {
-        error_log("Sesja użytkownika nie istnieje.");
-        http_response_code(401);
-        echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
-        exit();
-    }
+    // if (!isset($_SESSION['user'])) {
+    //     error_log("Sesja użytkownika nie istnieje.");
+    //     http_response_code(401);
+    //     echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+    //     exit();
+    // }
 
     if (isset($_COOKIE['PHPSESSID'])) {
         setcookie('PHPSESSID', $_COOKIE['PHPSESSID'], time() + 1800, "/");

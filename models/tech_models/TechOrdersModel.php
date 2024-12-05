@@ -11,7 +11,7 @@ class TechOrdersModel
 
     public function getOrders()
     {
-        $sql = "SELECT * FROM orders";
+        $sql = "SELECT o.*, u.first_name, u.last_name FROM orders o LEFT JOIN users u ON o.technician_id = u.user_id;";
         $result = $this->db->fetchAll($sql);
         return $result;
     }

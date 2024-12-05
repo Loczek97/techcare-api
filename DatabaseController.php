@@ -1,9 +1,7 @@
 <?php
 
-class DatabaseController
+class DatabaseController extends PDO
 {
-    private $pdo;
-
     public function __construct()
     {
         $config = parse_ini_file(__DIR__ . '/config.ini');
@@ -14,7 +12,7 @@ class DatabaseController
         $password = $config['DB_PASSWORD'];
 
         try {
-            $this->pdo = new PDO(
+            parent::__construct(
                 "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
                 $username,
                 $password,
@@ -29,7 +27,7 @@ class DatabaseController
     //fetch one row
     public function fetch($sql, $params = [])
     {
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->prepare($sql);
         $this->bindParams($stmt, $params);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,7 +36,7 @@ class DatabaseController
     //fetch all rows
     public function fetchAll($sql, $params = [])
     {
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->prepare($sql);
         $this->bindParams($stmt, $params);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -47,7 +45,7 @@ class DatabaseController
     //execute query
     public function execute($sql, $params = [])
     {
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->prepare($sql);
         $this->bindParams($stmt, $params);
         return $stmt->execute();
     }
@@ -60,14 +58,8 @@ class DatabaseController
         }
     }
 
-
-    public function lastInsertId()
-    {
-        return $this->pdo->lastInsertId();
-    }
-
     public function isConnected()
     {
-        return $this->pdo !== null;
+        return $this->inTransaction();
     }
 }
