@@ -55,7 +55,7 @@ class PartsController
         $selling_price = $input['selling_price'];
         $purchase_price = $input['purchase_price'];
 
-        $part = $this->PartsModel->addPart($part_name, $category, $quantity_in_stock, $selling_price, $purchase_price);
+        $part = $this->PartsModel->addPart($part_name, $category, $selling_price, $purchase_price, $quantity_in_stock);
 
         if ($part) {
             echo json_encode(['status' => 'success', 'data' => $part]);
