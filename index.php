@@ -20,19 +20,19 @@ if (isset($_COOKIE['session_cookie'])) {
     refreshCookie('session_cookie', $_COOKIE['session_cookie']);
 }
 
-if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $action !== 'public') {
-    checkSessionId();
-}
+// if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $action !== 'public') {
+//     checkSessionId();
+// }
 
-if ($action == 'tech' || $action == 'adm') {
-    CheckUserPermission();
-}
+// if ($action == 'tech' || $action == 'adm') {
+//     CheckUserPermission();
+// }
 
 
 
 $AuthController = new AuthController();
 $PublicController = new PublicController();
-$AdminRouter = new AdminRouter();
+// $AdminRouter = new AdminRouter();
 $UserRouter = new UserRouter();
 $TechRouter = new TechRouter();
 
@@ -55,9 +55,9 @@ switch ($action) {
     case 'tech':
         $TechRouter->handleRequest($url_parts[3]);
         break;
-    case 'admin':
-        $AdminRouter->handleRequest($url_parts[3]);
-        break;
+        // case 'admin':
+        //     $AdminRouter->handleRequest($url_parts[3]);
+        //     break;
     case 'public':
         $PublicController->handleRequest();
         break;

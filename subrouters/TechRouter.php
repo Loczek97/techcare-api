@@ -23,6 +23,7 @@ class TechRouter
                 $this->TechOrdersController->handleRequest();
                 break;
             default:
+                http_response_code(404);
                 echo json_encode(['status' => 'error', 'message' => 'Endpoint nie znaleziony']);
                 break;
         }
