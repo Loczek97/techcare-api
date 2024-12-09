@@ -3,6 +3,7 @@ require_once './controllers/AuthController.php';
 require_once './subrouters/UserRouter.php';
 require_once './controllers/PublicController.php';
 require_once './subrouters/TechRouter.php';
+require_once './subrouters/AdminRouter.php';
 require_once './CheckUserPermissions.php';
 require_once 'Cookies.php';
 require_once 'config.php';
@@ -31,6 +32,7 @@ if ($action == 'tech' || $action == 'adm') {
 
 $AuthController = new AuthController();
 $PublicController = new PublicController();
+$AdminRouter = new AdminRouter();
 $UserRouter = new UserRouter();
 $TechRouter = new TechRouter();
 
@@ -52,6 +54,9 @@ switch ($action) {
         break;
     case 'tech':
         $TechRouter->handleRequest($url_parts[3]);
+        break;
+    case 'admin':
+        $AdminRouter->handleRequest($url_parts[3]);
         break;
     case 'public':
         $PublicController->handleRequest();

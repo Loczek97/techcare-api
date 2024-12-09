@@ -37,6 +37,7 @@ class UserRouter
                 break;
             default:
                 echo json_encode(['status' => 'error', 'message' => 'Endpoint nie znaleziony']);
+                break;
         }
     }
 }
