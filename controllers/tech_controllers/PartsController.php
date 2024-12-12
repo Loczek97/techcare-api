@@ -77,7 +77,7 @@ class PartsController
         $purchase_price = $input['purchase_price'] ?? null;
 
         // Use updatePart instead of addPart
-        $part = $this->PartsModel->updatePart($part_id, $part_name, $category, $quantity_in_stock, $selling_price, $purchase_price);
+        $part = $this->PartsModel->updatePart($part_id, $part_name, $category, $selling_price, $purchase_price, $quantity_in_stock);
 
         if ($part) {
             http_response_code(200);
