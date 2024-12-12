@@ -15,26 +15,25 @@ $url_parts = explode('/', trim($url_path, '/'));
 $action = isset($url_parts[2]) ? $url_parts[2] : null;
 
 
-
 if (isset($_COOKIE['session_cookie'])) {
     refreshCookie('session_cookie', $_COOKIE['session_cookie']);
 }
 
-// if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $action !== 'public') {
-//     checkSessionId();
-// }
+if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $action !== 'public') {
+    checkSessionId();
+}
 
-// if ($action == 'tech' || $action == 'adm') {
-//     CheckUserPermission();
-// }
+if ($action == 'tech' || $action == 'admin') {
+    CheckUserPermission();
+}
 
 
 
 $AuthController = new AuthController();
 $PublicController = new PublicController();
-// $AdminRouter = new AdminRouter();
 $UserRouter = new UserRouter();
 $TechRouter = new TechRouter();
+$AdminRouter = new AdminRouter();
 
 switch ($action) {
     case 'login':
@@ -55,9 +54,9 @@ switch ($action) {
     case 'tech':
         $TechRouter->handleRequest($url_parts[3]);
         break;
-        // case 'admin':
-        //     $AdminRouter->handleRequest($url_parts[3]);
-        //     break;
+    case 'admin':
+        $AdminRouter->handleRequest($url_parts[3]);
+        break;
     case 'public':
         $PublicController->handleRequest();
         break;

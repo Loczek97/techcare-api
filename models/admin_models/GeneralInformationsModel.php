@@ -6,6 +6,7 @@ class GeneralInformationsModel
 
     public function __construct()
     {
+        // Zakładam, że masz już zainicjowany obiekt bazy danych
         $this->db = new DatabaseController();
     }
 

@@ -1,15 +1,15 @@
 <?php
 
-require_once './controllers/admin_controllers/AdminUserController.php';
+require_once './controllers/admin_controllers/AdminUsersController.php';
 require_once './controllers/admin_controllers/GeneralInformationsController.php';
 class AdminRouter
 {
-    private $AdminUserController;
+    private $AdminUsersController;
     private $GeneralInformationsController;
 
     public function __construct()
     {
-        $this->AdminUserController = new AdminUserController();
+        $this->AdminUsersController = new AdminUsersController();
         $this->GeneralInformationsController = new GeneralInformationsController();
     }
 
@@ -17,14 +17,10 @@ class AdminRouter
     {
         switch ($url_part) {
             case 'users':
-                $this->AdminUserController->handleRequest();
+                $this->AdminUsersController->handleRequest();
                 break;
-            case "general_informations":
+            case 'general-informations':
                 $this->GeneralInformationsController->handleRequest();
-                break;
-            default:
-                http_response_code(404);
-                echo json_encode(['status' => 'error', 'message' => 'Endpoint nie znaleziony']);
                 break;
         }
     }
