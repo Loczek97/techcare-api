@@ -20,7 +20,7 @@ class OrderController
                 $this->addOrder();
                 break;
             case 'PUT':
-                $this->cancelOrder();
+                $this->updateOrder();
                 break;
             case 'GET':
                 $this->getUserOrders();
@@ -63,7 +63,7 @@ class OrderController
     }
 
 
-    private function cancelOrder()
+    private function updateOrder()
     {
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -76,13 +76,22 @@ class OrderController
         $order_id = $input['order_id'];
         $user_id = $input['user_id'];
 
-        $result = $this->OrderModel->cancelOrder($order_id, $user_id);
+        //opcjonalne do aktualizacji zleceń
+        $status = $input['status'] ?? null;
+        $problem_description = $input['problem_description'] ?? null;
+        $device_type = $input['device_type'] ?? null;
+        $short_specification = $input['short_specification'] ?? null;
+
+        if (isset($problem_description) && isset($device_type) && isset($short_specification)) {
+        }
+
+        $result = $this->OrderModel->updateOrder($order_id, $user_id, $status, $short_specification, $device_type, $problem_description);
 
         if ($result) {
-            echo json_encode(['status' => 'success', 'message' => 'Zamówienie zostało anulowane']);
+            echo json_encode(['status' => 'success', 'message' => 'Zamówienie zostało zaktualizowane']);
         } else {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Błąd podczas anulowania zamówienia']);
+            echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji zamówienia']);
         }
     }
 

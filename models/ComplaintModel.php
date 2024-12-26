@@ -62,6 +62,20 @@ class ComplaintModel
         return $this->db->execute($query, $params);
     }
 
+    public function updateComplaint($complaint_id, $user_id, $complaint_description, $complaint_status)
+    {
+        $params = [
+            ':complaint_id' => $complaint_id,
+            ':user_id' => $user_id,
+            ':complaint_description' => $complaint_description
+        ];
+
+        $query = "UPDATE complaints SET complaint_description = :complaint_description 
+                  WHERE complaint_id = :complaint_id AND user_id = :user_id";
+
+        return $this->db->execute($query, $params);
+    }
+
     public function complaintExists($order_id)
     {
         $query = "SELECT COUNT(*) AS count FROM complaints WHERE order_id = :order_id";

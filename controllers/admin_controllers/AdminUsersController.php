@@ -15,25 +15,23 @@ class AdminUsersController
     {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Użycie explode do parsowania URI
-        $uriSegments = explode("/", $_SERVER['REQUEST_URI']);
-
-        // Obsługuje różne metody HTTP
         switch ($method) {
             case 'GET':
-                $this->getAllUsers();  // Pobiera wszystkich użytkowników
+                $this->getAllUsers();
                 break;
             case 'PUT':
-                $this->editPermissions();  // Obsługuje PUT do edycji uprawnień
+                $this->editPermissions();
+                break;
+            case 'DELETE':
+                $this->deleteUser();
                 break;
             default:
-                http_response_code(405);  // Błąd 405 dla nieobsługiwanej metody
+                http_response_code(405);
                 echo json_encode(['status' => 'error', 'message' => 'Metoda nieobsługiwana']);
                 break;
         }
     }
 
-    // Endpoint do pobrania wszystkich użytkowników
     private function getAllUsers()
     {
         $users = $this->AdminUsersModel->getAllUsers();
@@ -47,13 +45,27 @@ class AdminUsersController
         }
     }
 
-    // Endpoint do edycji uprawnień użytkownika
-    private function editPermissions()
+    private function deleteUser()
     {
-        // Dekodowanie danych JSON
         $input = json_decode(file_get_contents('php://input'), true);
 
-        // Sprawdzamy, czy mamy dane akcji
+        $user_id = $input['user_id'];
+
+        $result = $this->AdminUsersModel->deleteUser($user_id);
+
+        if ($result) {
+            http_response_code(200);
+            echo json_encode(['status' => 'success', 'message' => 'Użytkownik został usunięty']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Nie udało się usunąć użytkownika']);
+        }
+    }
+
+    private function editPermissions()
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+
         $action = isset($input['action']) ? $input['action'] : null;
 
         if (!$action) {
@@ -64,7 +76,6 @@ class AdminUsersController
 
         $result = null;
 
-        // Obsługuje różne akcje: add, edit, remove
         switch ($action) {
             case 'add':
                 if (!isset($input['user_id']) || !isset($input['permission_id'])) {
@@ -79,7 +90,6 @@ class AdminUsersController
                 break;
 
             case 'edit':
-                // Upewnij się, że przekazano wszystkie dane
                 if (!isset($input['user_id']) || !isset($input['current_permission_id']) || !isset($input['new_permission_id'])) {
                     http_response_code(400);
                     echo json_encode(['status' => 'error', 'message' => 'Brak wymaganych pól dla akcji edit']);
@@ -89,34 +99,31 @@ class AdminUsersController
                 $user_id = $input['user_id'];
                 $current_permission_id = $input['current_permission_id'];
                 $new_permission_id = $input['new_permission_id'];
-                $result = $this->AdminUsersModel->editPermissionsForUser($user_id, $current_permission_id, $new_permission_id);
+                $email = $input['email'] ?? null;
+                $phone = $input['phone'] ?? null;
+                $address = $input['address'] ?? null;
+                $password = $input['password'] ?? null;
+
+                $result = $this->AdminUsersModel->editUser(
+                    $user_id,
+                    $current_permission_id,
+                    $new_permission_id,
+                    $email,
+                    $phone,
+                    $address,
+                    $password
+                );
+
+                echo json_encode([
+                    'status' => $result ? 'success' : 'error',
+                    'message' => $result ? 'Dane użytkownika zostały zaktualizowane!' : 'Wystąpił błąd podczas aktualizacji!',
+                    'data' => $result
+                ]);
                 break;
-
-            case 'remove':
-                if (!isset($input['user_id']) || !isset($input['permission_id'])) {
-                    http_response_code(400);
-                    echo json_encode(['status' => 'error', 'message' => 'Brak wymaganych pól dla akcji remove']);
-                    return;
-                }
-
-                $user_id = $input['user_id'];
-                $permission_id = $input['permission_id'];
-                $result = $this->AdminUsersModel->deletePermissionFromUser($user_id, $permission_id);
-                break;
-
             default:
                 http_response_code(400);
                 echo json_encode(['status' => 'error', 'message' => 'Nieznana akcja']);
                 return;
-        }
-
-        // Sprawdzamy wynik operacji
-        if ($result) {
-            http_response_code(200);
-            echo json_encode(['status' => 'success', 'message' => 'Operacja zakończona sukcesem']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Wystąpił błąd podczas operacji', 'details' => $result]);
         }
     }
 }

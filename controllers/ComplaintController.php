@@ -22,7 +22,7 @@ class ComplaintController
                 $this->getUserComplaints();
                 break;
             case 'PUT':
-                $this->updateComplaintStatus();
+                $this->updateComplaint();
                 break;
             default:
                 http_response_code(405);
@@ -61,8 +61,6 @@ class ComplaintController
     }
 
 
-
-
     private function getUserComplaints()
     {
         $user_id = $_SESSION["user"]["user_id"];
@@ -97,6 +95,32 @@ class ComplaintController
         } else {
             http_response_code(400);
             echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji reklamacji']);
+        }
+    }
+
+    private function updateComplaint()
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!is_array($input) || !isset($input['complaint_id'], $input['user_id'], $input['complaint_description'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Nieprawidłowe dane wejściowe']);
+            return;
+        }
+
+        $complaint_id = $input['complaint_id'];
+        $user_id = $input['user_id'];
+        $complaint_description = $input['complaint_description'];
+        $complaint_status = $input['complaint_status'] ?? null;
+
+
+        $result = $this->ComplaintModel->updateComplaint($complaint_id, $user_id, $complaint_description, $complaint_status);
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Zamówienie zostało zaktualizowane']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji zamówienia']);
         }
     }
 }

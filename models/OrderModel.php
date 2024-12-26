@@ -26,15 +26,34 @@ class OrderModel
         return $this->db->execute($query, $params);
     }
 
-    public function cancelOrder($order_id, $user_id)
-    {
-        $query = "UPDATE orders SET status = 'Anulowane'
-                  WHERE order_id = :order_id AND user_id = :user_id";
 
+    public function updateOrder($order_id, $user_id, $status, $short_specification, $device_type, $problem_description)
+    {
         $params = [
             ':order_id' => $order_id,
             ':user_id' => $user_id,
         ];
+
+        $setClause = [];
+
+        if (isset($status)) {
+            $setClause[] = "status = :status";
+            $params[':status'] = $status;
+        }
+        if (isset($short_specification)) {
+            $setClause[] = "short_specification = :short_specification";
+            $params[':short_specification'] = $short_specification;
+        }
+        if (isset($device_type)) {
+            $setClause[] = "device_type = :device_type";
+            $params[':device_type'] = $device_type;
+        }
+        if (isset($problem_description)) {
+            $setClause[] = "problem_description = :problem_description";
+            $params[':problem_description'] = $problem_description;
+        }
+
+        $query = "UPDATE orders SET " . implode(', ', $setClause) . " WHERE order_id = :order_id AND user_id = :user_id";
 
         return $this->db->execute($query, $params);
     }
