@@ -39,10 +39,26 @@ class UserModel
         return $result;
     }
 
-    public function updateUser($user_id, $email, $phone, $password, $first_name, $last_name, $address)
+    public function updateUser($user_id, $email, $phone, $first_name, $last_name, $address, $current_password, $password, $password2)
     {
         $fieldsToUpdate = [];
         $params = [':user_id' => $user_id, ':updated_at' => date('Y-m-d H:i:s')];
+
+        if ($current_password !== null && $password !== null && $password2 !== null) {
+            if ($password !== $password2) {
+                return ['status' => 'error', 'message' => 'Nowe hasła nie są zgodne'];
+            }
+
+            $query = "SELECT password FROM users WHERE user_id = :user_id LIMIT 1";
+            $userData = $this->db->fetch($query, [':user_id' => $user_id]);
+
+            if (!$userData || !password_verify($current_password, $userData['password'])) {
+                return ['status' => 'error', 'message' => 'Nieprawidłowe obecne hasło'];
+            }
+
+            $fieldsToUpdate[] = "password = :password";
+            $params[':password'] = password_hash($password, PASSWORD_DEFAULT);
+        }
 
         if ($email !== null) {
             $fieldsToUpdate[] = "email = :email";
@@ -52,11 +68,6 @@ class UserModel
         if ($phone !== null) {
             $fieldsToUpdate[] = "phone = :phone";
             $params[':phone'] = $phone;
-        }
-
-        if ($password !== null) {
-            $fieldsToUpdate[] = "password = :password";
-            $params[':password'] = password_hash($password, PASSWORD_DEFAULT);
         }
 
         if ($first_name !== null) {
@@ -74,6 +85,10 @@ class UserModel
             $params[':address'] = $address;
         }
 
+        if (empty($fieldsToUpdate)) {
+            return ['status' => 'error', 'message' => 'Brak danych do aktualizacji'];
+        }
+
         $fieldsToUpdateString = implode(', ', $fieldsToUpdate);
 
         $query = "UPDATE users SET $fieldsToUpdateString, updated_at = :updated_at WHERE user_id = :user_id";
@@ -81,6 +96,7 @@ class UserModel
 
         return $result ? ['status' => 'success', 'message' => 'Użytkownik zaktualizowany'] : ['status' => 'error', 'message' => 'Aktualizacja użytkownika nie powiodła się'];
     }
+
 
     public function deleteUser($user_id)
     {

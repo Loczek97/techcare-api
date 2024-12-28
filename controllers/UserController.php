@@ -49,26 +49,28 @@ class UserController
 
         $email = isset($input['email']) ? trim($input['email']) : $currentUser['email'];
         $phone = isset($input['phone']) ? trim($input['phone']) : $currentUser['phone'];
-        $password = isset($input['password']) ? $input['password'] : null;
         $first_name = isset($input['first_name']) ? trim($input['first_name']) : $currentUser['first_name'];
         $last_name = isset($input['last_name']) ? trim($input['last_name']) : $currentUser['last_name'];
         $address = isset($input['address']) ? trim($input['address']) : $currentUser['address'];
+        $current_password = isset($input['current_password']) ? trim($input['current_password']) : null;
+        $password = isset($input['password']) ? trim($input['password']) : null;
+        $password2 = isset($input['password2']) ? trim($input['password2']) : null;
 
         $result = $this->UserModel->updateUser(
             $currentUser['user_id'],
             $email,
             $phone,
-            $password,
             $first_name,
             $last_name,
-            $address
+            $address,
+            $current_password,
+            $password,
+            $password2
         );
 
-        echo json_encode([
-            'status' => $result ? 'success' : 'error',
-            'message' => $result ? 'Użytkownik zaktualizowany' : 'Błąd podczas aktualizacji użytkownika'
-        ]);
+        echo json_encode($result);
     }
+
 
     private function deleteUser()
     {
