@@ -15,7 +15,7 @@ class TechReviewsController
     {
         $method = $_SERVER['REQUEST_METHOD'];
         switch ($method) {
-            case 'POST':
+            case 'GET':
                 $this->getReviews();
                 break;
             default:
