@@ -12,7 +12,6 @@ class ReviewModel
 
     public function addRating($user_id, $order_id, $rating_text, $rating_score)
     {
-        // Sprawdź, czy zamówienie posiada już opinię
         if ($this->hasOrderRating($order_id)) {
             return false;
         }
@@ -69,6 +68,7 @@ class ReviewModel
         $query = "DELETE FROM rating WHERE rating_id = :rating_id";
         return $this->db->execute($query, [':rating_id' => $rating_id]);
     }
+
 
     public function isOrderCompleted($order_id)
     {

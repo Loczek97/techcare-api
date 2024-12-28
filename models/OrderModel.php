@@ -53,10 +53,15 @@ class OrderModel
             $params[':problem_description'] = $problem_description;
         }
 
+        if (empty($setClause)) {
+            throw new Exception("Brak danych do aktualizacji zamówienia.");
+        }
+
         $query = "UPDATE orders SET " . implode(', ', $setClause) . " WHERE order_id = :order_id AND user_id = :user_id";
 
         return $this->db->execute($query, $params);
     }
+
 
     public function getUserOrders($user_id)
     {

@@ -76,7 +76,6 @@ class OrderController
         $order_id = $input['order_id'];
         $user_id = $input['user_id'];
 
-        //opcjonalne do aktualizacji zleceń
         $status = $input['status'] ?? null;
         $problem_description = $input['problem_description'] ?? null;
         $device_type = $input['device_type'] ?? null;

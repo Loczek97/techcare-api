@@ -105,7 +105,7 @@ class ReviewController
         $ratings = $this->ReviewModel->getRatingsByUser($user_id);
 
         if ($ratings) {
-            echo json_encode(['status' => 'success', 'ratings' => $ratings]);
+            echo json_encode(['status' => 'success', 'data' => $ratings]);
         } else {
             http_response_code(404);
             echo json_encode(['status' => 'error', 'message' => 'Brak ocen']);
@@ -135,12 +135,13 @@ class ReviewController
         $result = $this->ReviewModel->updateRating($rating_id, $rating_text, $rating_score);
 
         if ($result) {
-            echo json_encode(['status' => 'success', 'message' => 'Ocena została zaktualizowana']);
+            echo json_encode(['status' => 'success', 'message' => 'Ocena została zaktualizowana', 'data' => $this->ReviewModel->getRating($rating_id)]);
         } else {
             http_response_code(500);
             echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji oceny']);
         }
     }
+
 
     private function deleteRating()
     {
