@@ -14,12 +14,9 @@ class TechReviewsModel
     public function getReviewsByTechnician($technician_id)
     {
         $sql = "
-            SELECT o.*, r.review_text, r.rating, r.created_at
-            FROM orders o
-            LEFT JOIN reviews r ON o.order_id = r.order_id
-            WHERE o.technician_id = :technician_id
-            ORDER BY r.created_at DESC;
+            SELECT * FROM rating r LEFT JOIN orders o ON r.order_id=o.order_id AND o.technician_id=:technician_id;
         ";
+
 
         return $this->db->fetchAll($sql, [":technician_id" => $technician_id]);
     }

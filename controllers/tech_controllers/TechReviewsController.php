@@ -39,12 +39,6 @@ class TechReviewsController
 
         $reviews = $this->TechReviewsModel->getReviewsByTechnician($technician_id);
 
-        if ($reviews) {
-            http_response_code(200);
-            echo json_encode(["status" => "success", "data" => $reviews]);
-        } else {
-            http_response_code(404);
-            echo json_encode(["status" => "error", "message" => "Brak opinii dla tego technika"]);
-        }
+        echo json_encode(["status" => "success", "data" => $reviews]);
     }
 }
