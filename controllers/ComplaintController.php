@@ -75,52 +75,27 @@ class ComplaintController
         }
     }
 
-    private function updateComplaintStatus()
-    {
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        if (!is_array($input) || !isset($input['complaint_id'], $input['complaint_status'])) {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Nieprawidłowe dane wejściowe']);
-            return;
-        }
-
-        $complaint_id = $input['complaint_id'];
-        $complaint_status = $input['complaint_status'];
-
-        $result = $this->ComplaintModel->updateComplaintStatus($complaint_id, $complaint_status);
-
-        if ($result) {
-            echo json_encode(['status' => 'success', 'message' => 'Status reklamacji został zaktualizowany']);
-        } else {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji reklamacji']);
-        }
-    }
-
     private function updateComplaint()
     {
         $input = json_decode(file_get_contents('php://input'), true);
 
-        if (!is_array($input) || !isset($input['complaint_id'], $input['user_id'], $input['complaint_description'])) {
+        if (!isset($input['complaint_id'], $input['complaint_description'])) {
             http_response_code(400);
             echo json_encode(['status' => 'error', 'message' => 'Nieprawidłowe dane wejściowe']);
             return;
         }
 
         $complaint_id = $input['complaint_id'];
-        $user_id = $input['user_id'];
+        $user_id = $_SESSION['user']['user_id'];
         $complaint_description = $input['complaint_description'];
-        $complaint_status = $input['complaint_status'] ?? null;
 
-
-        $result = $this->ComplaintModel->updateComplaint($complaint_id, $user_id, $complaint_description, $complaint_status);
+        $result = $this->ComplaintModel->updateComplaint($complaint_id, $user_id, $complaint_description);
 
         if ($result) {
-            echo json_encode(['status' => 'success', 'message' => 'Zamówienie zostało zaktualizowane']);
+            echo json_encode(['status' => 'success', 'message' => 'Reklamacja została zaktualizowana']);
         } else {
             http_response_code(500);
-            echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji zamówienia']);
+            echo json_encode(['status' => 'error', 'message' => 'Błąd podczas aktualizacji reklamacji']);
         }
     }
 }

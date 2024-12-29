@@ -10,7 +10,7 @@ class ComplaintModel
         $this->db = new DatabaseController();
     }
 
-    public function addComplaint($order_id, $complaint_description, $complaint_status = 'złożone')
+    public function addComplaint($order_id, $complaint_description, $complaint_status = 'Oczekujące')
     {
         $query = "INSERT INTO complaints (order_id, complaint_description, complaint_status) 
                   VALUES (:order_id, :complaint_description, :complaint_status)";
@@ -44,37 +44,23 @@ class ComplaintModel
         return $this->db->fetchAll($query, [':user_id' => $user_id]);
     }
 
-    public function updateComplaintStatus($complaint_id, $complaint_status)
+    public function updateComplaint($complaint_id, $user_id, $complaint_description)
     {
-        $allowed_statuses = ['złożone', 'w trakcie rozpatrywania', 'rozwiązane'];
-        if (!in_array($complaint_status, $allowed_statuses)) {
-            return false;
-        }
+        $query = "UPDATE complaints 
+              SET complaint_description = :complaint_description, updated_at = CURRENT_TIMESTAMP
+              WHERE complaint_id = :complaint_id AND EXISTS (
+                  SELECT 1 FROM orders WHERE orders.order_id = complaints.order_id AND orders.user_id = :user_id
+              )";
 
-        $query = "UPDATE complaints SET complaint_status = :complaint_status 
-                  WHERE complaint_id = :complaint_id";
-
-        $params = [
-            ':complaint_status' => $complaint_status,
-            ':complaint_id' => $complaint_id
-        ];
-
-        return $this->db->execute($query, $params);
-    }
-
-    public function updateComplaint($complaint_id, $user_id, $complaint_description, $complaint_status)
-    {
         $params = [
             ':complaint_id' => $complaint_id,
             ':user_id' => $user_id,
             ':complaint_description' => $complaint_description
         ];
 
-        $query = "UPDATE complaints SET complaint_description = :complaint_description 
-                  WHERE complaint_id = :complaint_id AND user_id = :user_id";
-
         return $this->db->execute($query, $params);
     }
+
 
     public function complaintExists($order_id)
     {
