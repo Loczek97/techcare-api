@@ -27,15 +27,8 @@ class TechReviewsController
 
     private function getReviews()
     {
-        $input = json_decode(file_get_contents('php://input'), true);
 
-        if (!$input || !isset($input['technician_id'])) {
-            http_response_code(400);
-            echo json_encode(["status" => "error", "message" => "Brak technika w zapytaniu"]);
-            return;
-        }
-
-        $technician_id = $input['technician_id'];
+        $technician_id = $_SESSION['user']['user_id'];
 
         $reviews = $this->TechReviewsModel->getReviewsByTechnician($technician_id);
 
