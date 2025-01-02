@@ -15,7 +15,7 @@ class AssignPartsToOrderController
     {
         $method = $_SERVER['REQUEST_METHOD'];
         switch ($method) {
-            case 'POST':
+            case 'PUT':
                 $this->assignPartsToOrder();
                 break;
             case 'DELETE':
@@ -33,16 +33,16 @@ class AssignPartsToOrderController
         $input = json_decode(file_get_contents('php://input'), true);
 
         $order_id = $input['order_id'];
-        $parts_ids = $input['parts_ids'];
+        $parts = $input['parts'];
 
-        $result = $this->AssignPartsToOrderModel->assignPartsToOrder($order_id, $parts_ids);
+        $result = $this->AssignPartsToOrderModel->assignPartsToOrder($order_id, $parts);
 
-        if ($result) {
+        if ($result === true) {
             http_response_code(200);
             echo json_encode(["status" => "success", "message" => "Części zostały przypisane do zlecenia"]);
         } else {
             http_response_code(400);
-            echo json_encode(["status" => "error", "message" => "Nie udało się przypisać części do zlecenia"]);
+            echo json_encode(["status" => "error", "message" => $result]);
         }
     }
 
@@ -51,15 +51,14 @@ class AssignPartsToOrderController
         $input = json_decode(file_get_contents('php://input'), true);
 
         $order_id = $input['order_id'];
-        $parts_id = $input['parts_id'];
 
-        $result = $this->AssignPartsToOrderModel->removePartFromOrder($order_id, $parts_id);
+        $result = $this->AssignPartsToOrderModel->removePartFromOrder($order_id);
 
         if ($result) {
             http_response_code(200);
-            echo json_encode(["status" => "success", "message" => "Część została usunięta ze zlecenia"]);
+            echo json_encode(["status" => "success", "message" => "Wszystkie części zostały usunięte ze zlecenia"]);
         } else {
-            http_response_code(404);
+            http_response_code(400);
             echo json_encode(["status" => "error", "message" => "Nie udało się usunąć części ze zlecenia"]);
         }
     }
