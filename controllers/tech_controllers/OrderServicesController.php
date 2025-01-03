@@ -37,8 +37,14 @@ class OrderServicesController
     {
         $input = json_decode(file_get_contents('php://input'), true);
 
-        $order_id = $input['order_id'];
-        $services = $input['services'];
+        $order_id = $input['order_id'] ?? null;
+        $services = $input['services'] ?? null;
+
+        if (!$order_id || !$services) {
+            http_response_code(400);
+            echo json_encode(["status" => "error", "message" => "Brak danych order_id lub services"]);
+            return;
+        }
 
         $result = $this->OrderServicesModel->addServicesToOrder($order_id, $services);
 
@@ -50,6 +56,7 @@ class OrderServicesController
             echo json_encode(["status" => "error", "message" => "Nie udało się przypisać usług do zlecenia"]);
         }
     }
+
 
     private function removeServicesFromOrder()
     {
