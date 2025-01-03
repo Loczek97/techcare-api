@@ -12,15 +12,22 @@ class OrderServicesModel
     public function addServicesToOrder($order_id, $services)
     {
         try {
+            if (!is_array($services) || empty($services)) {
+                throw new Exception("Invalid services format");
+            }
+
             $this->db->beginTransaction();
 
+            // Usuń istniejące usługi dla danego zamówienia
             $clear_sql = "DELETE FROM order_services WHERE order_id = :order_id;";
+            $this->db->execute($clear_sql, [':order_id' => $order_id]);
 
-            $this->db->execute($clear_sql, [
-                ':order_id' => $order_id
-            ]);
-
+            // Dodaj nowe usługi
             foreach ($services as $service_id) {
+                if (!is_numeric($service_id)) {
+                    throw new Exception("Invalid service ID: " . json_encode($service_id));
+                }
+
                 $sql = "INSERT INTO order_services (order_id, service_id) VALUES (:order_id, :service_id);";
                 $this->db->execute($sql, [
                     ':order_id' => $order_id,
@@ -32,9 +39,11 @@ class OrderServicesModel
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
+            error_log("Error in addServicesToOrder: " . $e->getMessage());
             return false;
         }
     }
+
 
     public function removeServicesFromOrder($order_id, $services)
     {

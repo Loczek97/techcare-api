@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
 require_once './models/tech_models/OrderServicesModel.php';
 
 class OrderServicesController
