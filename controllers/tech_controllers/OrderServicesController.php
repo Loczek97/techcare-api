@@ -36,7 +36,7 @@ class OrderServicesController
         $input = json_decode(file_get_contents('php://input'), true);
 
         $order_id = $input['order_id'];
-        $services = $input['services']; // Array of service IDs
+        $services = $input['services'];
 
         $result = $this->OrderServicesModel->addServicesToOrder($order_id, $services);
 

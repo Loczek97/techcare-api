@@ -14,6 +14,12 @@ class OrderServicesModel
         try {
             $this->db->beginTransaction();
 
+            $clear_sql = "DELETE FROM order_services WHERE order_id = :order_id;";
+
+            $this->db->execute($clear_sql, [
+                ':order_id' => $order_id
+            ]);
+
             foreach ($services as $service_id) {
                 $sql = "INSERT INTO order_services (order_id, service_id) VALUES (:order_id, :service_id);";
                 $this->db->execute($sql, [
