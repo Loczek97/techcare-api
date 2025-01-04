@@ -45,25 +45,10 @@ class OrderServicesModel
     }
 
 
-    public function removeServicesFromOrder($order_id, $services)
+    public function removeServicesFromOrder($order_id)
     {
-        try {
-            $this->db->beginTransaction();
-
-            foreach ($services as $service_id) {
-                $sql = "DELETE FROM order_services WHERE order_id = :order_id AND service_id = :service_id;";
-                $this->db->execute($sql, [
-                    ':order_id' => $order_id,
-                    ':service_id' => $service_id
-                ]);
-            }
-
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            return false;
-        }
+        $sql = "DELETE FROM order_services WHERE order_id = :order_id;";
+        return $this->db->execute($sql, [':order_id' => $order_id]);
     }
 
     public function getServicesForOrder($order_id)

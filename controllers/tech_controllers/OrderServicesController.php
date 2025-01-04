@@ -63,9 +63,8 @@ class OrderServicesController
         $input = json_decode(file_get_contents('php://input'), true);
 
         $order_id = $input['order_id'];
-        $services = $input['services'];
 
-        $result = $this->OrderServicesModel->removeServicesFromOrder($order_id, $services);
+        $result = $this->OrderServicesModel->removeServicesFromOrder($order_id);
 
         if ($result) {
             http_response_code(200);
