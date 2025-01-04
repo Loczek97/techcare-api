@@ -6,6 +6,7 @@ require_once './controllers/tech_controllers/TechReviewsController.php';
 require_once './controllers/tech_controllers/AssignPartsToOrder.php';
 require_once './controllers/tech_controllers/OrderServicesController.php';
 require_once './controllers/tech_controllers/TechComplaintsController.php';
+require_once './controllers/tech_controllers/InvoicesController.php';
 class TechRouter
 {
     private $PartsController;
@@ -14,6 +15,7 @@ class TechRouter
     private $AssignPartsToOrderController;
     private $OrderServicesController;
     private $TechComplaintsController;
+    private $InvoicesController;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class TechRouter
         $this->AssignPartsToOrderController = new AssignPartsToOrderController();
         $this->OrderServicesController = new OrderServicesController();
         $this->TechComplaintsController = new TechComplaintsController();
+        $this->InvoicesController = new InvoicesController();
     }
 
     public function handleRequest($url_part)
@@ -45,6 +48,9 @@ class TechRouter
                 break;
             case 'complaints':
                 $this->TechComplaintsController->handleRequest();
+                break;
+            case 'invoices':
+                $this->InvoicesController->handleRequest();
                 break;
         }
     }

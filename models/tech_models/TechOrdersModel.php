@@ -11,7 +11,6 @@ class TechOrdersModel
 
     public function getOrders()
     {
-        // Zapytanie dla zamówień
         $orders_sql = "
         SELECT 
             o.order_id AS order_id,
@@ -33,14 +32,19 @@ class TechOrdersModel
             technician.first_name AS technician_first_name,
             technician.last_name AS technician_last_name,
             technician.email AS technician_email,
-            technician.phone AS technician_phone
+            technician.phone AS technician_phone,
+
+            i.invoice_id AS invoice_id,
+            i.file_path AS invoice_file_path
 
         FROM 
             orders o
         LEFT JOIN 
             users cl ON o.user_id = cl.user_id
         LEFT JOIN 
-            users technician ON o.technician_id = technician.user_id;
+            users technician ON o.technician_id = technician.user_id
+        LEFT JOIN
+            invoices i ON o.order_id = i.order_id;
     ";
 
         $orders = $this->db->fetchAll($orders_sql);
