@@ -66,9 +66,11 @@ class OrderModel
     public function getUserOrders($user_id)
     {
         $query = "SELECT o.*, 
-                     t.first_name AS technician_name
+                     t.first_name AS technician_name,
+                     i.invoice_id, i.file_path
               FROM orders o
               LEFT JOIN users t ON o.technician_id = t.user_id
+              LEFT JOIN invoices i ON o.order_id = i.order_id
               WHERE o.user_id = :user_id";
         $result = $this->db->fetchAll($query, [':user_id' => $user_id]);
 
