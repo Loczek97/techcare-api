@@ -42,7 +42,7 @@ class ReviewModel
 
     public function getRatingsByUser($user_id)
     {
-        $query = "SELECT r.*, o.short_specification AS order_name 
+        $query = "SELECT r.*, o.problem_description AS order_name 
                   FROM rating r 
                   JOIN orders o ON r.order_id = o.order_id 
                   WHERE r.user_id = :user_id";
