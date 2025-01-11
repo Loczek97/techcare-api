@@ -26,7 +26,7 @@ class ComplaintModel
 
     public function getComplaint($complaint_id)
     {
-        $query = "SELECT c.*, o.short_specification AS order_name
+        $query = "SELECT c.*, o.problem_description AS order_name
                   FROM complaints c
                   JOIN orders o ON c.order_id = o.order_id
                   WHERE c.complaint_id = :complaint_id";
@@ -36,7 +36,7 @@ class ComplaintModel
 
     public function getComplaintsByUser($user_id)
     {
-        $query = "SELECT c.*, o.short_specification AS order_name
+        $query = "SELECT c.*, o.problem_description AS order_name
                   FROM complaints c
                   JOIN orders o ON c.order_id = o.order_id
                   WHERE o.user_id = :user_id";
@@ -71,7 +71,7 @@ class ComplaintModel
 
     public function getLastInsertedComplaint()
     {
-        $query = "SELECT c.*, o.short_specification AS order_name
+        $query = "SELECT c.*, o.problem_description AS order_name
               FROM complaints c
               JOIN orders o ON c.order_id = o.order_id
               ORDER BY c.complaint_id DESC LIMIT 1";

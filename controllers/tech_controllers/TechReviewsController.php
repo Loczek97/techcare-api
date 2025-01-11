@@ -15,7 +15,7 @@ class TechReviewsController
     {
         $method = $_SERVER['REQUEST_METHOD'];
         switch ($method) {
-            case 'GET':
+            case 'POST':
                 $this->getReviews();
                 break;
             default:
@@ -28,7 +28,8 @@ class TechReviewsController
     private function getReviews()
     {
 
-        $technician_id = $_SESSION['user']['user_id'];
+        $input = json_decode(file_get_contents('php://input'), true);
+        $technician_id = $input['technician_id'];
 
         $reviews = $this->TechReviewsModel->getReviewsByTechnician($technician_id);
 
