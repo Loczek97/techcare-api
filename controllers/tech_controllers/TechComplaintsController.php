@@ -48,8 +48,8 @@ class TechComplaintsController
 
         $complaint_id = $input['complaint_id'];
         $data = [
-            'complaint_status' => $input['complaint_status'],
-            'complaints_return_message' => $input['complaints_return_message'],
+            'complaint_status' => $input['complaint_status'] ?? null,
+            'complaints_return_message' => $input['complaints_return_message'] ?? null,
             'technician_id' => $input['technician_id'] ?? null
         ];
 
