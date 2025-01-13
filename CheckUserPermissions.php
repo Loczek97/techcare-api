@@ -1,24 +1,20 @@
 <?php
 
-function CheckUserPermission()
+function CheckUserPermission($permission_level)
 {
-    // $db = new DatabaseController();
+    $db = new DatabaseController();
 
-    // $input = json_decode(file_get_contents('php://input'), true);
+    $user_id = $_SESSION['user']['user_id'];
 
-    // echo json_decode($input['user_id']);
+    $sql = "SELECT MAX(p.permission_level) AS max_permission_level 
+            FROM permissions p 
+            LEFT JOIN user_permissions up ON p.permission_id = up.permission_id 
+            WHERE up.user_id = :user_id";
 
-    // $sql = "SELECT p.permission_name 
-    //         FROM permissions p 
-    //         LEFT JOIN user_permissions up ON p.permission_id = up.permission_id 
-    //         WHERE up.user_id = :user_id;";
-
-    // $result = $db->fetchAll($sql, [":user_id" => $input['user_id']]);
+    $result = $db->fetch($sql, [":user_id" => $user_id]);
 
 
-    // if (empty($result)) {
-    //     http_response_code(401);
-    //     echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
-    //     exit();
-    // }
+    $has_permission = $permission_level <= $result['max_permission_level'];
+
+    return $has_permission;
 }

@@ -23,11 +23,6 @@ if ($action !== 'login' && $action !== 'register' && $action !== 'logout' && $ac
     checkSessionId();
 }
 
-if ($action == 'tech' || $action == 'admin') {
-    CheckUserPermission();
-}
-
-
 
 $AuthController = new AuthController();
 $PublicController = new PublicController();
