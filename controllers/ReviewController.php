@@ -104,12 +104,7 @@ class ReviewController
         $user_id = $_SESSION['user']['user_id'];
         $ratings = $this->ReviewModel->getRatingsByUser($user_id);
 
-        if ($ratings) {
-            echo json_encode(['status' => 'success', 'data' => $ratings]);
-        } else {
-            http_response_code(404);
-            echo json_encode(['status' => 'error', 'message' => 'Brak ocen']);
-        }
+        return json_encode(['status' => 'success', 'data' => $ratings]);
     }
 
     private function updateRating()
