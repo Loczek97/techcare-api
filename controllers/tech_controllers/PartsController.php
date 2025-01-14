@@ -58,7 +58,7 @@ class PartsController
         $part = $this->PartsModel->addPart($part_name, $category, $selling_price, $purchase_price, $quantity_in_stock);
 
         if ($part) {
-            echo json_encode(['status' => 'success', 'data' => $part]);
+            echo json_encode(['status' => 'success', 'message' => 'Część dodana do magazynu.']);
         } else {
             http_response_code(500);
             echo json_encode(['status' => 'error', 'message' => 'Nie udało się dodać części']);
