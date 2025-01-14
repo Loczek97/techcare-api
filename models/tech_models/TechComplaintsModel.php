@@ -9,22 +9,43 @@ class TechComplaintsModel
         $this->db = new DatabaseController();
     }
 
-    public function getComplaints($complaint_id = null, $order_id = null)
+    public function getComplaints()
     {
-        $sql = "SELECT * FROM complaints WHERE 1=1";
-        $params = [];
+        $sql = "SELECT 
+                c.complaint_id,
+                c.complaint_date,
+                c.complaint_description,
+                c.complaint_status,
+                c.complaints_return_message,
+                c.updated_at AS complaint_updated_at,
+                c.technician_id,
+                t.first_name AS complaint_technician_first_name,
+                t.last_name AS complaint_technician_last_name,
+                o.order_id,
+                o.status AS order_status,
+                o.problem_description,
+                o.device_type,
+                o.short_specification,
+                o.created_at AS order_created_at,
+                o.updated_at AS order_updated_at,
+                t2.first_name AS order_technician_first_name,
+                t2.last_name AS order_technician_last_name,
+                i.invoice_id,
+                i.invoice_date,
+                i.file_path AS invoice_file_path
+            FROM 
+                complaints c
+            LEFT JOIN 
+                users t ON c.technician_id = t.user_id
+            LEFT JOIN 
+                orders o ON c.order_id = o.order_id
+            LEFT JOIN 
+                users t2 ON o.technician_id = t2.user_id
+            LEFT JOIN 
+                invoices i ON o.order_id = i.order_id;
+                ";
 
-        if ($complaint_id) {
-            $sql .= " AND complaint_id = :complaint_id";
-            $params[':complaint_id'] = $complaint_id;
-        }
-
-        if ($order_id) {
-            $sql .= " AND order_id = :order_id";
-            $params[':order_id'] = $order_id;
-        }
-
-        return $this->db->fetchAll($sql, $params);
+        return $this->db->fetchAll($sql);
     }
 
     public function updateComplaint($complaint_id, $data)

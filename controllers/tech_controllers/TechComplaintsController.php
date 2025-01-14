@@ -33,10 +33,8 @@ class TechComplaintsController
 
     private function getComplaints()
     {
-        $complaint_id = $_GET['complaint_id'] ?? null;
-        $order_id = $_GET['order_id'] ?? null;
 
-        $result = $this->TechComplaintsModel->getComplaints($complaint_id, $order_id);
+        $result = $this->TechComplaintsModel->getComplaints();
 
         http_response_code(200);
         echo json_encode(["status" => "success", "data" => $result]);
