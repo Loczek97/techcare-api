@@ -26,7 +26,7 @@ class PermissionModel
             ':permission_level' => $permission_level
         ];
 
-        $this->db->execute($query, $params);
+        return $this->db->execute($query, $params);
     }
 
     public function updatePermission($permission_id, $permission_name, $permission_level)
@@ -39,7 +39,7 @@ class PermissionModel
             ':permission_level' => $permission_level
         ];
 
-        $this->db->execute($query, $params);
+        return $this->db->execute($query, $params);
     }
 
     public function deletePermission($permission_id)
@@ -50,6 +50,6 @@ class PermissionModel
             ':permission_id' => $permission_id
         ];
 
-        $this->db->execute($query, $params);
+        return $this->db->execute($query, $params);
     }
 }

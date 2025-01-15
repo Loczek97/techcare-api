@@ -46,9 +46,14 @@ class PermissionController
         $permission_name = $input['permission_name'];
         $permission_level = $input['permission_level'];
 
-        $this->PermissionModel->postPermission($permission_name, $permission_level);
 
-        echo json_encode(['status' => 'success', 'message' => 'Uprawnienie zostało dodane']);
+        $result = $this->PermissionModel->postPermission($permission_name, $permission_level);
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Uprawnienie zostało dodane']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Wystąpił błąd podczas dodawania uprawnienia']);
+        }
     }
 
     private function updatePermission()
@@ -58,18 +63,27 @@ class PermissionController
         $permission_name = $input['permission_name'];
         $permission_level = $input['permission_level'];
 
-        $this->PermissionModel->updatePermission($permission_id, $permission_name, $permission_level);
+        $result = $this->PermissionModel->updatePermission($permission_id, $permission_name, $permission_level);
 
-        echo json_encode(['status' => 'success', 'message' => 'Uprawnienie zostało zaktualizowane']);
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Uprawnienie zostało zaktualizowane']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Wystąpił błąd podczas aktualizacji uprawnienia']);
+        }
     }
+
 
     private function deletePermission()
     {
         $input = json_decode(file_get_contents('php://input'), true);
         $permission_id = $input['permission_id'];
 
-        $this->PermissionModel->deletePermission($permission_id);
+        $result = $this->PermissionModel->deletePermission($permission_id);
 
-        echo json_encode(['status' => 'success', 'message' => 'Uprawnienie zostało usunięte']);
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Uprawnienie zostało usunięte']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Wystąpił błąd podczas usuwania uprawnienia']);
+        }
     }
 }
