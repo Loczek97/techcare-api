@@ -31,37 +31,30 @@ class TechRouter
 
     public function handleRequest($url_part)
     {
-        if (CheckUserPermission(3)) {
-            switch ($url_part) {
-                case 'parts':
-                    $this->PartsController->handleRequest();
-                    break;
-                case 'orders':
-                    $this->TechOrdersController->handleRequest();
-                    break;
-                case 'reviews':
-                    $this->TechReviewsController->handleRequest();
-                    break;
-                case 'assign-parts':
-                    $this->AssignPartsToOrderController->handleRequest();
-                    break;
-                case 'order-services':
-                    $this->OrderServicesController->handleRequest();
-                    break;
-                case 'complaints':
-                    $this->TechComplaintsController->handleRequest();
-                    break;
-                case 'invoices':
-                    $this->InvoicesController->handleRequest();
-                    break;
-                default:
-                    http_response_code(404);
-                    echo json_encode(["status" => "error", "message" => "Nieprawidłowy URL"]);
-                    break;
-            }
-        } else {
-            http_response_code(403);
-            echo json_encode(["status" => "error", "message" => "Brak dostępu"]);
+
+        switch ($url_part) {
+            case 'parts':
+                $this->PartsController->handleRequest();
+                break;
+            case 'orders':
+                $this->TechOrdersController->handleRequest();
+                break;
+            case 'reviews':
+                $this->TechReviewsController->handleRequest();
+                break;
+            case 'assign-parts':
+                $this->AssignPartsToOrderController->handleRequest();
+                break;
+            case 'order-services':
+                $this->OrderServicesController->handleRequest();
+                break;
+            case 'invoices':
+                $this->InvoicesController->handleRequest();
+                break;
+            default:
+                http_response_code(404);
+                echo json_encode(["status" => "error", "message" => "Nieprawidłowy URL"]);
+                break;
         }
     }
 }

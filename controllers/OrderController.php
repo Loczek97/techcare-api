@@ -99,8 +99,6 @@ class OrderController
         $user_id = $_SESSION['user']['user_id'];
         $orders = $this->OrderModel->getUserOrders($user_id);
 
-        if ($orders) {
-            echo json_encode(['status' => 'success', 'data' => $orders]);
-        }
+        echo json_encode(['status' => 'success', 'data' => $orders]);
     }
 }

@@ -117,7 +117,9 @@ class AdminUsersController
                 echo json_encode([
                     'status' => $result ? 'success' : 'error',
                     'message' => $result ? 'Dane użytkownika zostały zaktualizowane!' : 'Wystąpił błąd podczas aktualizacji!',
-                    'data' => $result
+                    'data' => $result,
+                    'current_permission_id' => $current_permission_id,
+                    'new_permission_id' => $new_permission_id,
                 ]);
                 break;
             default:

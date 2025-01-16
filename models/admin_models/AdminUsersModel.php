@@ -9,7 +9,6 @@ class AdminUsersModel
         $this->db = new DatabaseController();
     }
 
-    // Pobranie wszystkich użytkowników
     public function getAllUsers()
     {
         $sql = "SELECT u.*, p.permission_name, p.permission_level
@@ -22,7 +21,6 @@ class AdminUsersModel
         return $result ? $result : false;
     }
 
-    // Dodanie uprawnienia użytkownikowi - na przykład dodanie dostępu do panelu inwentaryzacji
     public function addPermissionToUser($user_id, $permission_id)
     {
         $sql = "INSERT INTO user_permissions (user_id, permission_id) VALUES (:user_id, :permission_id)";
@@ -38,31 +36,45 @@ class AdminUsersModel
             $this->db->beginTransaction();
 
             $updateUserSql = "UPDATE users 
-                          SET permission_id = :new_permission_id, 
-                              email = COALESCE(:email, email), 
+                          SET email = COALESCE(:email, email), 
                               phone = COALESCE(:phone, phone), 
                               address = COALESCE(:address, address)";
-
 
             if ($password) {
                 $updateUserSql .= ", password = :password";
             }
-
             $updateUserSql .= " WHERE user_id = :user_id";
 
             $params = [
-                'new_permission_id' => $new_permission_id,
                 'email' => $email,
                 'phone' => $phone,
                 'address' => $address,
-                'user_id' => $user_id
+                'user_id' => $user_id,
             ];
-
             if ($password) {
                 $params['password'] = password_hash($password, PASSWORD_BCRYPT);
             }
 
+            $updatePermissionSql = "UPDATE users set permission_id=:new_permission_id WHERE user_id=:user_id;";
+
+            $this->db->execute($updatePermissionSql, [
+                'new_permission_id' => $new_permission_id,
+                'user_id' => $user_id
+            ]);
+
             $this->db->execute($updateUserSql, $params);
+
+            $checkSql = "SELECT COUNT(*) AS count 
+                     FROM user_permissions 
+                     WHERE user_id = :user_id AND permission_id = :current_permission_id";
+            $exists = $this->db->fetch($checkSql, [
+                'user_id' => $user_id,
+                'current_permission_id' => $current_permission_id
+            ]);
+
+            if ($exists['count'] == 0) {
+                throw new Exception('Nie znaleziono odpowiedniego rekordu w tabeli user_permissions do aktualizacji.');
+            }
 
             $updatePermissionsSql = "UPDATE user_permissions 
                                  SET permission_id = :new_permission_id 
@@ -75,8 +87,6 @@ class AdminUsersModel
                 'new_permission_id' => $new_permission_id
             ]);
 
-            $this->db->commit();
-
             $getEditedUserSql = "SELECT u.*, p.permission_name, p.permission_level
                              FROM users u
                              LEFT JOIN user_permissions up ON u.user_id = up.user_id
@@ -84,6 +94,8 @@ class AdminUsersModel
                              WHERE u.user_id = :user_id";
 
             $editedUser = $this->db->fetch($getEditedUserSql, ['user_id' => $user_id]);
+
+            $this->db->commit();
 
             return $editedUser ? $editedUser : false;
         } catch (Exception $e) {
