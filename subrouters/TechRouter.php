@@ -32,6 +32,11 @@ class TechRouter
     public function handleRequest($url_part)
     {
 
+        if (CheckUserPermission(3) == false) {
+            http_response_code(403);
+            echo json_encode(["status" => "error", "message" => "Brak uprawnień"]);
+            return;
+        }
         switch ($url_part) {
             case 'parts':
                 $this->PartsController->handleRequest();
